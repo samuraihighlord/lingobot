@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="2 12 60 35" role="img" aria-label="LingoBot logo"
+    xmlns="http://www.w3.org/2000/svg" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <!-- left lens: incoming message (outlined bubble, tail bottom-left) -->
+  <path d="M14 16H20A9 9 0 0 1 29 25V29A9 9 0 0 1 20 38H16L9.5 44.5L10.5 36.8A9 9 0 0 1 5 29V25A9 9 0 0 1 14 16Z"
+    stroke="#3cfa44" stroke-width="3"/>
+  <path d="M12.6 33.2L17 21.6L21.4 33.2M14.3 29H19.7" stroke="#3cfa44" stroke-width="2.6"/>
+  <!-- bridge -->
+  <path d="M29 23.5Q32 19.5 35 23.5" stroke="#3cfa44" stroke-width="3"/>
+  <!-- right lens: translated reply (filled bubble, tail bottom-right) -->
+  <path d="M50 16H44A9 9 0 0 0 35 25V29A9 9 0 0 0 44 38H48L54.5 44.5L53.5 36.8A9 9 0 0 0 59 29V25A9 9 0 0 0 50 16Z"
+    fill="#3cfa44" stroke="#3cfa44" stroke-width="3"/>
+  <path d="M47 19.6V21.4M41.4 23.4H52.6M43.8 23.8Q46.2 31 52.6 34.2M50.2 23.8Q47.8 31 41.4 34.2"
+    stroke="#061006" stroke-width="2.4"/>
+</svg>
