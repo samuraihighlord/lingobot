@@ -62,7 +62,7 @@ export function mountPhoneUi(): void {
           </div>
           <span class="dot on" title="Paired" aria-hidden="true"></span>
         </div>
-        <div class="hint account-meta">Via <span id="bot-name">@thelingo_bot</span> · Language: <strong id="lang">English</strong> · change with <code>/lang</code></div>
+        <div class="hint account-meta">Via <span id="bot-name">@thelingo_bot</span> · Language: <strong id="lang">English</strong> · <code>/lang</code> changes it on the glasses, in the bot and for translations</div>
         <button id="disconnect" class="danger" type="button">Disconnect this account</button>
       </section>
 
@@ -115,10 +115,34 @@ export function mountPhoneUi(): void {
       <section class="card">
         <div class="eyebrow">Get messages on your glasses</div>
         <ol class="steps">
-          <li><strong>Forward</strong> any message or voice note to <span class="bot-ref">@thelingo_bot</span>.</li>
+          <li><strong>Forward</strong> any message or voice note to <span class="bot-ref">@thelingo_bot</span>. Voice notes are transcribed first.
+            Reply on the glasses, then type <span class="bot-ref">@thelingo_bot</span> in the original chat and tap your reply to send it.</li>
           <li><strong>Private chats, automatically</strong> (Telegram Premium): Settings → Telegram Business → Chatbots → add
-            <span class="bot-ref">@thelingo_bot</span>, choose chats, allow <em>Reply to messages</em>. Replies are sent as you.</li>
-          <li><strong>Groups</strong>: add the bot to the group, then tap <code>/follow</code> in your private chat with <span class="bot-ref">@thelingo_bot</span>. Pick the group and the people to follow, or everything not in your language. Nothing is posted in the group.</li>
+            <span class="bot-ref">@thelingo_bot</span>, choose chats, allow <em>Reply to messages</em>. Messages not in your language
+            reach the glasses by themselves, and replies are sent as you.</li>
+          <li><strong>Follow people in a group, privately</strong>: add the bot to the group, then tap <code>/follow</code> in your
+            private chat with <span class="bot-ref">@thelingo_bot</span> and pick the group and the people. Everything they post, text
+            or voice, in any language, comes to the glasses. Nothing is posted in the group.</li>
+          <li><strong>Watch a whole group</strong>: in <code>/follow</code> choose <em>Everything not in my language</em> or
+            <em>Mentions of me &amp; replies to me</em> (or send <code>/watch</code> / <code>/watch mentions</code> in the group).
+            Your replies are posted under the original message. <code>/watching</code> lists what you watch.</li>
+          <li><strong>Glasses off?</strong> Nothing is lost: the translation is sent to your chat with
+            <span class="bot-ref">@thelingo_bot</span> instead.</li>
+        </ol>
+        <p class="hint">Talking with someone who speaks another language? Make a Telegram group with them and
+          <span class="bot-ref">@thelingo_bot</span>, <code>/follow</code> them so their messages reach your glasses translated, and
+          set your voice notes to their language (below).</p>
+      </section>
+
+      <section class="card">
+        <div class="eyebrow">Send voice notes from your glasses</div>
+        <ol class="steps">
+          <li><strong>Choose where they go</strong>: <code>/notes</code> in your chat with <span class="bot-ref">@thelingo_bot</span>.
+            Pick one of your groups (a group with only you and the bot makes a private notebook), a person, or the chat with the bot.</li>
+          <li><strong>In their language</strong>: in <code>/notes</code> tap 🌐 and pick the language they read, or send
+            <code>/notes lang Spanish</code>. You speak in yours. They get your voice with the transcript translated
+            into theirs, and your own words underneath. Any language works here, because they read it on their phone.</li>
+          <li><strong>Record</strong>: on the Ready screen choose <em>Record a voice note</em>, speak, and tap to stop (2 minutes max).</li>
         </ol>
       </section>
 
@@ -218,8 +242,12 @@ const FEATURES = [
     icon: stroke('<path d="M4 6h16M4 12h10M4 18h13"/>') },
   { title: 'Speak, sent in theirs', text: 'Talk in your own language and check the translation before it goes out.',
     icon: stroke('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>') },
-  { title: 'Watches chats for you', text: 'Private chats through Telegram Business, or follow chosen people in groups.',
+  { title: 'Watches chats for you', text: 'Private chats through Telegram Business, whole groups, or just the people you follow.',
     icon: stroke('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>') },
+  { title: 'Your language, everywhere', text: '/lang sets one language for the translations, the glasses screens and the bot. Scripts the G2 cannot display yet (Arabic, Hindi, Thai…) are marked “not available yet”.',
+    icon: stroke('<path d="M4 5h9M8.5 3v2M6 5c.6 3 2.6 5.6 5 7M11 5c-.8 3.4-3.2 6.4-6 8"/><path d="M12 21l4.5-10L21 21M13.5 18h6"/>') },
+  { title: 'Voice notes, translated', text: 'Record on the glasses and send to a group or a person, with the transcript in their language.',
+    icon: stroke('<path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 10.5 6M19 11a7 7 0 0 1-.6 2.8M12 18v3"/>') },
   { title: 'Private by design', text: 'Messages live only in memory and API keys stay on the server. “Show original” is always one tap away.',
     icon: stroke('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>') },
 ]
@@ -672,6 +700,7 @@ button:hover::after, .primary:hover::after { opacity: 1; }
 .steps { margin: 0; padding-left: 22px; display: grid; gap: 12px; color: var(--text); font-size: 14px; }
 .steps li::marker { color: var(--green); font-weight: 800; }
 .steps .bot-ref { color: var(--green); }
+.steps + .hint { margin-top: 14px; }
 .controls { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; margin: 0; font-size: 14px; align-items: center; }
 .controls dt { justify-self: start; color: var(--green); font-weight: 650; font-size: 12.5px; padding: 3px 10px; border-radius: 999px;
   background: rgba(60, 250, 68, .08); border: 1px solid rgba(60, 250, 68, .25); }
