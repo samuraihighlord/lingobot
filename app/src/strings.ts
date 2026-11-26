@@ -20,6 +20,8 @@ const EN = {
   'ignore': '○  Ignore',
   'noteRecTo': 'Voice note  ›  sent to {chat}\nTap to stop and send.',
   'noteRecSavedTo': 'Voice note  ›  saved to {chat}\nTap to stop and save.',
+  'noteRecLang': 'Voice note  ›  {chat}  ·  translated to {lang}\nTap to stop and send.',
+  'noteLang': 'Translated to {lang}',
   'replyRec': 'Speak in {mine}  ›  sent in {theirs}\nTap to stop. You can review it before it is sent.',
   'stopsIn': 'stops in {n}s',
   'replyTo': 'Reply to {name}',

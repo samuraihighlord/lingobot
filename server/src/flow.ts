@@ -6,7 +6,7 @@ import type { ClientMsg, Item, ServerMsg } from './protocol.js'
 import { newId, unlinkTelegram, type ReplyTarget, type Session } from './store.js'
 import { SttUnavailableError, transcribe } from './stt.js'
 import { analyzeIncoming, translateReply } from './translate.js'
-import { glassesStrings, langLabel, t, UiError, type Key, type Vars } from './i18n/index.js'
+import { glassesStrings, langCode, langLabel, t, UiError, type Key, type Vars } from './i18n/index.js'
 import { pcmToMp3 } from './mp3.js'
 import { PCM_BYTES_PER_SECOND, pcmToWav } from './wav.js'
 
@@ -20,7 +20,7 @@ export interface TelegramPort {
   /** Tells the Telegram user something in their private chat with the bot. */
   notify(chatId: number, text: string): Promise<void>
   /** Posts a voice note recorded on the glasses in the user's notes chat. Returns where it went. */
-  saveNote(session: Session, note: { mp3: Buffer; durationSec: number; transcript?: string }): Promise<string>
+  saveNote(session: Session, note: { mp3: Buffer; durationSec: number; transcript?: string; translation?: string }): Promise<string>
 }
 let telegram: TelegramPort = {
   botUsername: 'LingoBot',
@@ -102,6 +102,7 @@ export function stateMsg(session: Session): ServerMsg {
     user: paired && session.displayName ? { name: session.displayName, username: session.handle } : undefined,
     notesChat: paired ? session.notesChat?.title : undefined,
     notesToPerson: paired && session.notesChat?.kind === 'person' ? true : undefined,
+    notesLang: paired && notesLang(session) ? langLabel(notesLang(session)!, session.userLang) : undefined,
   }
 }
 
@@ -173,7 +174,7 @@ async function onClientMessage(session: Session, msg: ClientMsg): Promise<void> 
       send(session, { t: 'busy', text: tr(session, 's.transcribing') })
       try {
         const wav = pcmToWav(Buffer.concat(rec.chunks))
-        const said = await transcribe({ data: wav, filename: 'reply.wav', mimeType: 'audio/wav' })
+        const said = await transcribe({ data: wav, filename: 'reply.wav', mimeType: 'audio/wav', likely: likelySpoken(session) })
         if (!said) throw new UiError('s.notCaught')
         await prepareReply(session, item, said, true)
       } catch (err) {
@@ -238,14 +239,42 @@ async function saveVoiceNote(session: Session, pcm: Buffer): Promise<void> {
   // The transcript is a bonus (searchable notes): the note is saved even when it fails or the quota is used up.
   let transcript: string | undefined
   if (session.telegramId && !takeQuota(session.telegramId, session.userLang)) {
-    transcript = await transcribe({ data: pcmToWav(pcm), filename: 'note.wav', mimeType: 'audio/wav' }).catch(err => {
+    transcript = await transcribe({ data: pcmToWav(pcm), filename: 'note.wav', mimeType: 'audio/wav', likely: likelySpoken(session) }).catch(err => {
       if (!(err instanceof SttUnavailableError)) console.error('[flow] note transcript failed:', (err as Error).message)
       return undefined
     })
   }
-  const chat = await telegram.saveNote(session, { mp3, durationSec, transcript: transcript || undefined })
-  console.log(`[flow] glasses ${session.code} saved a ${durationSec}s voice note to ${chat}`)
-  send(session, { t: 'note_saved', chat, durationSec, transcript: transcript || undefined })
+  // The recipient reads another language (/notes → 🌐): translate the transcript for them.
+  const toLang = notesLang(session)
+  let translation: string | undefined
+  if (transcript && toLang && session.telegramId && !takeQuota(session.telegramId, session.userLang)) {
+    send(session, { t: 'busy', text: tr(session, 's.translatingTo', { lang: langLabel(toLang, session.userLang) }) })
+    translation = await translateReply(transcript, session.userLang, toLang).catch(err => {
+      console.error('[flow] note translation failed:', (err as Error).message)
+      return undefined
+    })
+  }
+  const chat = await telegram.saveNote(session, { mp3, durationSec, transcript: transcript || undefined, translation })
+  console.log(`[flow] glasses ${session.code} saved a ${durationSec}s voice note to ${chat}${translation ? ` (translated to ${toLang})` : ''}`)
+  send(session, {
+    t: 'note_saved',
+    chat,
+    durationSec,
+    transcript: transcript || undefined,
+    lang: translation && toLang ? langLabel(toLang, session.userLang) : undefined,
+  })
+}
+
+/** What the user probably speaks on the glasses: their language, or English. */
+function likelySpoken(session: Session): string[] | undefined {
+  const code = langCode(session.userLang)
+  return code ? [code, 'en'] : undefined
+}
+
+/** The language voice notes are translated into, unless it is the user's own. */
+function notesLang(session: Session): string | undefined {
+  const lang = session.notesChat?.lang
+  return lang && !sameLanguage(lang, session.userLang) ? lang : undefined
 }
 
 /** Translates the user's reply into the sender's language and asks the glasses to confirm. */

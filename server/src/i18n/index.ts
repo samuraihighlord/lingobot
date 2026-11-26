@@ -83,6 +83,12 @@ function find(raw: string): Lang | undefined {
   return LANGS.find(l => l.name.toLowerCase() === q || l.code === q || l.aliases.includes(q))
 }
 
+/** ISO 639-1 code of a language name ("French" -> "fr"), for speech-to-text; undefined when unknown. */
+export function langCode(lang: string): string | undefined {
+  const code = find(lang)?.code
+  return code && code.length === 2 ? code : undefined
+}
+
 export function isDisplayable(lang: string): boolean {
   return find(lang)?.ok ?? true
 }

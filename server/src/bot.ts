@@ -45,7 +45,9 @@ export async function startBot(): Promise<void> {
       // A person sees who it is from; in your own group the transcript alone is enough.
       // (A note to another person stays in English: we do not know their language.)
       const from = target?.kind === 'person' ? t(undefined, 'b.voiceNoteFrom', { name: session.displayName ?? session.firstName ?? 'a LingoBot user' }) : '🎙'
-      const caption = clipCaption(note.transcript ? `${from}${target?.kind === 'person' ? '\n' : ' '}${note.transcript}` : from)
+      // Translated for the recipient (/notes → 🌐): their language first, the speaker's own words under it.
+      const words = note.translation ? `${note.translation}\n\n🗣 ${note.transcript}` : note.transcript
+      const caption = clipCaption(words ? `${from}${target?.kind === 'person' ? '\n' : ' '}${words}` : from)
       const file = () => new InputFile(note.mp3, `note-${new Date().toISOString().slice(0, 16).replace(':', '')}.mp3`)
       if (target) {
         try {
@@ -326,9 +328,18 @@ export async function startBot(): Promise<void> {
 
   // /notes inside a group the user created: voice notes recorded on the glasses are saved there.
   //   /notes        use this chat · /notes off: stop (notes go to the private chat with the bot)
+  //   /notes lang Spanish   translate the transcripts for the recipient (/notes lang off: stop)
   bot.command('notes', async ctx => {
     const session = ctx.from && findByTelegramId(ctx.from.id)
     if (!session) return ctx.reply(tc(ctx, 'b.pairFirstPrivate'))
+    const langArg = /^lang(?:uage)?\b\s*(.*)$/i.exec(ctx.match.trim())
+    if (langArg) {
+      // In a group, "/notes lang X" also makes that group the notes chat.
+      if ((ctx.chat.type === 'group' || ctx.chat.type === 'supergroup') && session.notesChat?.chatId !== ctx.chat.id) {
+        setNotesTarget(session, { chatId: ctx.chat.id, title: ctx.chat.title ?? ts(session, 'b.thisGroup'), kind: 'group' })
+      }
+      return setNotesLang(ctx, session, langArg[1])
+    }
     const off = /^(off|stop|none)$/i.test(ctx.match.trim())
     if (ctx.chat.type === 'private') {
       session.awaitingNotesUsername = undefined
@@ -353,6 +364,8 @@ export async function startBot(): Promise<void> {
   })
 
   function setNotesTarget(session: Session, target: NotesChat | undefined): void {
+    // Picking the same chat again keeps its translation language.
+    if (target && session.notesChat?.chatId === target.chatId) target.lang ??= session.notesChat.lang
     session.notesChat = target
     session.awaitingNotesUsername = undefined
     persist()
@@ -382,10 +395,76 @@ export async function startBot(): Promise<void> {
       : current.kind === 'person'
         ? ts(session, 'b.notesWhereTo', { name: current.title })
         : ts(session, 'b.notesWhereIn', { title: current.title })
-    const lines = [ts(session, 'b.notesSavedWhere', { where }), '', ts(session, 'b.pickWhere')]
+    const lines = [ts(session, 'b.notesSavedWhere', { where })]
+    if (current) {
+      // The language the recipient reads: transcripts are translated into it.
+      const lang = current.lang ? langLabel(current.lang, session.userLang) : undefined
+      lines.push(lang ? ts(session, 'b.notesLangLine', { lang }) : ts(session, 'b.notesLangNone'))
+      kb.row().text(ts(session, 'b.notesLangBtn', { lang: lang ?? ts(session, 'b.notesLangOff') }).slice(0, 60), 'nl')
+    }
+    lines.push('', ts(session, 'b.pickWhere'))
     if (!groups.some(x => x.count === 2)) lines.push('', ts(session, 'b.notesTip', { bot: username }))
     return { text: lines.join('\n'), kb }
   }
+
+  // --- Voice notes in the recipient's language ----------------------------------------
+  // They read the notes on their phone, not on the glasses, so every language is allowed here.
+  const NOTES_LANGUAGES = [...MENU_LANGUAGES, 'Italian', 'Japanese', 'Korean', 'Ukrainian', 'Polish', 'Dutch', 'Persian', 'Vietnamese']
+
+  function notesLangPicker(session: Session): { text: string; kb: InlineKeyboard } {
+    const current = session.notesChat!
+    const kb = new InlineKeyboard()
+    NOTES_LANGUAGES.forEach((lang, i) => {
+      kb.text(`${current.lang === lang ? '✅ ' : ''}${langLabel(lang, session.userLang, true)}`, `nl:${lang}`)
+      if (i % 3 === 2) kb.row()
+    })
+    kb.row().text(`${current.lang ? '' : '✅ '}${ts(session, 'b.notesLangOffBtn')}`, 'nl:off').row().text(ts(session, 'b.back'), 'nl:back')
+    return { text: ts(session, 'b.notesLangPick', { chat: current.title }), kb }
+  }
+
+  /** /notes lang <language> (or off); no language: show the picker. */
+  async function setNotesLang(ctx: Context, session: Session, wanted: string): Promise<unknown> {
+    const target = session.notesChat
+    if (!target) return ctx.reply(ts(session, 'b.notesLangNeedTarget'))
+    if (!wanted.trim()) {
+      const { text, kb } = notesLangPicker(session)
+      return ctx.reply(text, { reply_markup: kb })
+    }
+    if (/^(off|none|no|stop)$/i.test(wanted.trim())) {
+      target.lang = undefined
+      persist()
+      pushState(session)
+      return ctx.reply(ts(session, 'b.notesLangCleared', { chat: target.title }))
+    }
+    const choice = await resolveLanguage(wanted)
+    // 'unavailable' only means the glasses cannot draw it: fine for someone reading on their phone.
+    if (!choice.ok && choice.reason === 'unknown') return ctx.reply(ts(session, 'b.langUnknown', { text: wanted.slice(0, 40) }))
+    target.lang = choice.name
+    persist()
+    pushState(session)
+    return ctx.reply(ts(session, 'b.notesLangSet', { chat: target.title, lang: langLabel(choice.name, session.userLang) }))
+  }
+
+  bot.callbackQuery(/^nl(?::(.+))?$/, async ctx => {
+    const session = findByTelegramId(ctx.from.id)
+    if (!session) return ctx.answerCallbackQuery({ text: tc(ctx, 'b.pairFirstShort') })
+    const target = session.notesChat
+    if (!target) return ctx.answerCallbackQuery({ text: ts(session, 'b.notesLangNeedTarget'), show_alert: true })
+    const choice = ctx.match[1]
+    let toast: string | undefined
+    if (choice && choice !== 'back') {
+      target.lang = choice === 'off' ? undefined : choice
+      persist()
+      pushState(session)
+      toast = target.lang
+        ? ts(session, 'b.notesLangSet', { chat: target.title, lang: langLabel(target.lang, session.userLang) })
+        : ts(session, 'b.notesLangCleared', { chat: target.title })
+    }
+    // No choice yet: show the languages. Chosen (or back): return to the /notes menu.
+    const { text, kb } = choice ? await notesPicker(session) : notesLangPicker(session)
+    await ctx.answerCallbackQuery(toast ? { text: toast.slice(0, 190) } : undefined)
+    await ctx.editMessageText(text, { reply_markup: kb }).catch(() => {})
+  })
 
   /** Points voice notes at a person: they must have started the bot, which a greeting checks. */
   async function chooseNotesPerson(ctx: Context, session: Session, handle: string): Promise<unknown> {

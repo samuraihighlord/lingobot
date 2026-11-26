@@ -42,6 +42,8 @@ export interface NotesChat {
   chatId: number
   title: string // group title, or "@alice" / the person's name
   kind?: 'group' | 'person' // missing = group (older saves)
+  /** Language the recipient reads (English name): transcripts of voice notes are translated into it. */
+  lang?: string
 }
 
 export interface Session {

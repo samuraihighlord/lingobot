@@ -74,7 +74,7 @@
   "s.noStt": "Olu adịghị edozi ya ruo ugbu a (enweghị igodo olu-ruo-ederede). Ozi ederede ka na-arụ ọrụ.",
   "s.glassesDisconnected": "Iyi-ọkụ gị kwụsịrị njikọ na akaụntụ Telegram a.",
   "s.yourChat": "mkparịta ụka gị na @{bot}",
-  "b.help": "LingoBot na-asụgharị ozi Telegram na ndekọ olu n'iyi-ọkụ Even G2 gị.\n\n1. Mepee LingoBot n'iyi-ọkụ gị wee zipu m koodu ọ gosiri: /start LB-XXXX\n2. Tọọ asụsụ gị: /lang. Iyi-ọkụ gị na mkparịta ụka a ga-agbanwe ya, ihe niile n'asụsụ ọzọ ga-esughari ya.\n3. Zipu ozi ọ bụla ma ọ bụ ndekọ olu ọ bụla ebe a.\n4. Họrọ ma ọ bụ kwuo azịza n'iyi-ọkụ ahụ.\n5. N'mkparịta ụka mbụ, pịa @{bot} wee kpọchie azịza gị iji zipu ya.\n6. Iji jikọta iyi-ọkụ ahụ na akaụntụ ọzọ: /disconnect\n\nỤzọ akpaaka (enweghị izipu):\n• Mkparịta ụka nzuzo (Telegram Premium): Ntọala > Telegram Business > Chatbots > tinye @{bot}, họrọ mkparịta ụka, kwe \"Zaghachi ozi\". Ozi n'asụsụ mba ọzọ na-apụta n'iyi-ọkụ gị, azịza gị ga-azipu dị ka gị.\n• Otu: tinye m n'otu ahụ wee zipu /watch ebe ahụ. Ozi ọ bụla na asụsụ gị apụtaghị n'iyi-ọkụ gị (/watch mentions: naanị ihe ndị kpọrọ gị aha na azịza gị). M na-ebipụta azịza gị n'otu ahụ. /unwatch iji kwụsị.\n• Soro ndị mmadụ n'otu, nzuzo: /follow ebe a, họrọ otu ahụ, then onye ahụ. (N'otu ahụ n'onwe ya: /watch @name, ma ọ bụ zaghachi ozi ha site na /watch.) Ihe niile ha bipụtara (ederede ma ọ bụ olu) ga-abịa n'iyi-ọkụ gị n'asụsụ gị; zaghachi site n'olu, họrọ azịza AI, ma ọ bụ leghara ya anya. /unwatch @name iji kwụsị, /watching iji hụ ihe niile ị na-elegharị anya.\n\nNdekọ olu sitere n'iyi-ọkụ:\n• /notes: họrọ ebe ha ga-aga: otu ọ bụla n'ime otu gị (mepụta otu nwere m naanị maka ndetu nzuzo), onye (/notes @name; ya na m kwesịrị ịmepe mkparịta ụka), ma ọ bụ mkparịta ụka a. N'iyi-ọkụ, họrọ \"Dekọọ ndekọ olu\" n'ihuenyo Njikere wee pịa iji kwụsị: a ga-ezipu ya dị ka ozi olu, yana ederede.",
+  "b.help": "LingoBot na-atụgharị ozi Telegram na ozi olu n'ihe ọhụụ Even G2 gị.\n\n1. Mepee LingoBot n'ihe ọhụụ gị ma zipu m koodu ọ gosiri: /start LB-XXXX\n2. Tọọ asụsụ gị: /lang. Ihe ọhụụ gị na mkparịta ụka a ga-agbanwe ka ọ bụrụ ya, ihe niile n'asụsụ ọzọ ga-atụgharịkwa ka ọ bụrụ ya.\n3. Zipụ ozi ma ọ bụ ozi olu ọ bụla ebe a.\n4. Họrọ ma ọ bụ kwuo azịza n'ihe ọhụụ.\n5. Na mkparịta ụka mbụ, dee @{bot} wee pịa azịza gị iji zipu ya.\n6. Iji jikọọ ihe ọhụụ ahụ na akaụntụ ọzọ: /disconnect\n\nỌnọdụ akpaaka (enweghị izipu):\n• Mkparịta ụka nkeonwe (Telegram Premium): Settings > Telegram Business > Chatbots > tinye @{bot}, họrọ mkparịta ụka, kwe ka \"Reply to messages\". Ozi asụsụ mba ọzọ ga-apụta n'ihe ọhụụ gị, azịza gị ga-aga dị ka gị.\n• Otu: tinye m n'otu ahụ ma zipu /watch ebe ahụ. Ozi ọ bụla na asụsụ gị ọ bụghị ga-apụta n'ihe ọhụụ gị (/watch mentions: naanị ihe ndị kpọrọ gị aha na azịza ndị gbara gị). M ga-ebipụta azịza gị n'otu ahụ. /unwatch iji kwụsị.\n• Soro ndị mmadụ n'otu, nke onwe: /follow ebe a, họrọ otu ahụ, mgbe ahụ onye ahụ. (N'otu n'onwe ya: /watch @aha, ma ọ bụ zaghachi ozi ya site na /watch.) Ihe ọ bụla ha bipụtara (ederede ma ọ bụ olu) ga-aga n'ihe ọhụụ gị n'asụsụ gị; zaghachi site n'olu, họrọ azịza AI, ma ọ bụ leghara ya. /unwatch @aha iji kwụsị, /watching iji hụ ihe niile ị na-ele anya.\n\nNdekọ olu sitere n'ihe ọhụụ:\n• /notes: họrọ ebe ha ga-aga: otu gị (mepụta otu naanị gị na ya maka ndekọ nkeonwe), onye (/notes @aha; ọ ga-abụ na ọ mepeghị mkparịta ụka na m), ma ọ bụ mkparịta ụka a. N'ihe ọhụụ, họrọ \"Record a voice note\" n'ihuenyo Ready wee pịa iji kwụsị: a ga-ezipu ya dị ka ozi olu, yana ederede.\n• Ị na-agwa onye asụsụ ọzọ okwu? /notes → 🌐 na-ahọrọ asụsụ ha na-agụ (ma ọ bụ /notes lang Spanish): ị na-ekwu n'asụsụ gị, ederede dị n'okpuru ndekọ olu ọ bụla ga-atụgharị ka ọ bụrụ nke ha.",
   "b.alreadyPaired": "Iyi-ọkụ ndị a ejikọtala na akaụntụ gị. Asụsụ: {lang}.",
   "b.codeNotFound": "Ahụghị koodu. Mepee LingoBot n'G2 gị iji nweta koodu ọhụrụ.",
   "b.pairedOther": "Iyi-ọkụ ndị a ejikọtara na akaụntụ Telegram ọzọ. Kwụsị njikọ ya tupu (n'ibe LingoBot na ekwentị, ma ọ bụ /disconnect site na akaụntụ ahụ), wee zipu koodu ahụ ọzọ.",
@@ -187,7 +187,19 @@
   "b.cmdNotes": "Họrọ group ma ọ bụ mmadụ maka ndekọ olu gị",
   "b.cmdLang": "Asụsụ gị",
   "b.cmdHelp": "Otu LingoBot si arụ ọrụ",
-  "b.cmdDisconnect": "Wepụ njikọ iko anya gị"
+  "b.cmdDisconnect": "Wepụ njikọ iko anya gị",
+  "g.noteRecLang": "Ozi olu  ›  {chat}  ·  etinyere na {lang}\nPịa iji kwụsị ma zipu.",
+  "g.noteLang": "Etinyere na {lang}",
+  "b.notesLangBtn": "🌐 Tụgharịa ozi olu m: {lang}",
+  "b.notesLangOff": "adịghị",
+  "b.notesLangLine": "A na-edekọ ma tụgharịa nke ọ bụla ka ọ bụrụ {lang} maka ha; olu gị ka ọ dị otu ahụ.",
+  "b.notesLangNone": "Akọwaghị ka ọ bụrụ asụsụ ọzọ. Pịa 🌐 ma ọ bụrụ na ha na-agụ asụsụ ọzọ.",
+  "b.notesLangPick": "Asụsụ gịnị ka {chat} na-agụ? Ị ga-aga n'ihu na-ekwu asụsụ gị: ederede dị n'okpuru ndekọ olu ọ bụla ga-atụgharị ka ọ bụrụ nke ha.\nAsụsụ ọ bụla dabara ebe a (dee /notes lang <asụsụ> maka nke a edepụtabeghị).",
+  "b.notesLangOffBtn": "✖️ Enweghị ntụgharị",
+  "b.notesLangSet": "Ozi olu gị na {chat} ka a na-atụgharị ka ọ bụrụ {lang} ugbu a.",
+  "b.notesLangCleared": "Ozi olu gị na {chat} akwụsịla ịtụgharị.",
+  "b.notesLangNeedTarget": "Tupu ọ bụla, họrọ ebe ozi olu gị ga-aga (/notes), mgbe ahụ asụsụ ha.",
+  "b.back": "‹ Azụ"
  },
  "source": {
   "g.connecting": "Connecting to LingoBot…",
@@ -262,7 +274,7 @@
   "s.noStt": "Voice is not set up yet (no speech-to-text key). Text messages still work.",
   "s.glassesDisconnected": "Your glasses were disconnected from this Telegram account.",
   "s.yourChat": "your chat with @{bot}",
-  "b.help": "LingoBot translates Telegram messages and voice notes on your Even G2.\n\n1. Open LingoBot on your glasses and send me the code it shows: /start LB-XXXX\n2. Set your language: /lang. Your glasses and this chat switch to it, and everything in another language is translated into it.\n3. Forward any message or voice note here.\n4. Pick or speak a reply on the glasses.\n5. In the original chat, type @{bot} and tap your reply to send it.\n6. To pair the glasses with another account: /disconnect\n\nAutomatic mode (no forwarding):\n• Private chats (Telegram Premium): Settings > Telegram Business > Chatbots > add @{bot}, pick the chats, allow \"Reply to messages\". Foreign-language messages appear on your glasses and your reply is sent as you.\n• Groups: add me to the group and send /watch there. Every message not in your language appears on your glasses (/watch mentions: only mentions of you and replies to you). I post your reply in the group. /unwatch to stop.\n• Follow people in a group, privately: /follow here, pick the group, then the person. (In the group itself: /watch @name, or reply to their message with /watch.) Everything they post (text or voice) reaches your glasses in your language; reply by voice, pick an AI reply, or ignore it. /unwatch @name to stop, /watching to see everything you watch.\n\nVoice notes from the glasses:\n• /notes: pick where they go: one of your groups (create a group with only me in it for private notes), a person (/notes @name; they must have opened a chat with me), or this chat. On the glasses, choose \"Record a voice note\" on the Ready screen and tap to stop: it is sent as a voice message, with a transcript.",
+  "b.help": "LingoBot translates Telegram messages and voice notes on your Even G2.\n\n1. Open LingoBot on your glasses and send me the code it shows: /start LB-XXXX\n2. Set your language: /lang. Your glasses and this chat switch to it, and everything in another language is translated into it.\n3. Forward any message or voice note here.\n4. Pick or speak a reply on the glasses.\n5. In the original chat, type @{bot} and tap your reply to send it.\n6. To pair the glasses with another account: /disconnect\n\nAutomatic mode (no forwarding):\n• Private chats (Telegram Premium): Settings > Telegram Business > Chatbots > add @{bot}, pick the chats, allow \"Reply to messages\". Foreign-language messages appear on your glasses and your reply is sent as you.\n• Groups: add me to the group and send /watch there. Every message not in your language appears on your glasses (/watch mentions: only mentions of you and replies to you). I post your reply in the group. /unwatch to stop.\n• Follow people in a group, privately: /follow here, pick the group, then the person. (In the group itself: /watch @name, or reply to their message with /watch.) Everything they post (text or voice) reaches your glasses in your language; reply by voice, pick an AI reply, or ignore it. /unwatch @name to stop, /watching to see everything you watch.\n\nVoice notes from the glasses:\n• /notes: pick where they go: one of your groups (create a group with only me in it for private notes), a person (/notes @name; they must have opened a chat with me), or this chat. On the glasses, choose \"Record a voice note\" on the Ready screen and tap to stop: it is sent as a voice message, with a transcript.\n• Talking with someone who speaks another language? /notes → 🌐 picks the language they read (or /notes lang Spanish): you speak in yours, and the transcript under each voice note is translated into theirs.",
   "b.alreadyPaired": "These glasses are already paired with your account. Language: {lang}.",
   "b.codeNotFound": "Code not found. Open LingoBot on your G2 to get a fresh code.",
   "b.pairedOther": "These glasses are paired with another Telegram account. Disconnect it first (on the LingoBot page on the phone, or /disconnect from that account), then send the code again.",
@@ -375,6 +387,18 @@
   "b.cmdNotes": "Pick the group or person for your voice notes",
   "b.cmdLang": "Your language",
   "b.cmdHelp": "How LingoBot works",
-  "b.cmdDisconnect": "Unpair your glasses"
+  "b.cmdDisconnect": "Unpair your glasses",
+  "g.noteRecLang": "Voice note  ›  {chat}  ·  translated to {lang}\nTap to stop and send.",
+  "g.noteLang": "Translated to {lang}",
+  "b.notesLangBtn": "🌐 Translate my voice notes: {lang}",
+  "b.notesLangOff": "off",
+  "b.notesLangLine": "Each note is transcribed and translated into {lang} for them; your voice stays as it is.",
+  "b.notesLangNone": "Not translated. Tap 🌐 if they read another language.",
+  "b.notesLangPick": "Which language does {chat} read? You keep speaking your language: the transcript under each voice note is translated into theirs.\nAny language works here (type /notes lang <language> for one not listed).",
+  "b.notesLangOffBtn": "✖️ No translation",
+  "b.notesLangSet": "Your voice notes to {chat} are now translated into {lang}.",
+  "b.notesLangCleared": "Your voice notes to {chat} are no longer translated.",
+  "b.notesLangNeedTarget": "First pick where your voice notes go (/notes), then their language.",
+  "b.back": "‹ Back"
  }
 }

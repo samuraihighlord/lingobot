@@ -22,7 +22,7 @@ export type ServerMsg =
   // user = the Telegram account paired with these glasses
   // notesChat = where voice notes recorded on the glasses go: a group title, or a person (notesToPerson)
   // ui = the glasses' own texts in the user's language (keys of app/src/strings.ts); userLangLabel = the language named in itself
-  | { t: 'state'; paired: boolean; botUsername: string; userLang?: string; userLangLabel?: string; ui?: Record<string, string>; user?: { name: string; username?: string }; disconnected?: boolean; notesChat?: string; notesToPerson?: boolean }
+  | { t: 'state'; paired: boolean; botUsername: string; userLang?: string; userLangLabel?: string; ui?: Record<string, string>; user?: { name: string; username?: string }; disconnected?: boolean; notesChat?: string; notesToPerson?: boolean; notesLang?: string }
   | { t: 'item'; item: Item }
   | { t: 'busy'; text: string }
   // mine = the user's words in their own language (the transcript when spoken = true)
@@ -30,8 +30,10 @@ export type ServerMsg =
   | { t: 'confirm'; itemId: string; mine: string; translated: string; lang: string; langLabel?: string; spoken?: boolean }
   // sentTo set = the reply was posted in the original chat automatically (watched chats)
   | { t: 'delivered'; itemId: string; botUsername: string; sentTo?: string }
-  // A voice note recorded on the glasses was posted in the notes chat (transcript when speech-to-text worked)
-  | { t: 'note_saved'; chat: string; durationSec: number; transcript?: string }
+  // A voice note recorded on the glasses was posted in the notes chat (transcript when speech-to-text worked).
+  // lang = the language its transcript was translated into for the recipient (named in the user's language).
+  // notesLang (in 'state') = the same, set with /notes → 🌐
+  | { t: 'note_saved'; chat: string; durationSec: number; transcript?: string; lang?: string }
   | { t: 'error'; text: string }
 
 // Glasses -> backend (audio is sent as binary frames between rec_start and rec_stop)

@@ -26,6 +26,8 @@ export const EN = {
   'g.ignore': '○  Ignore',
   'g.noteRecTo': 'Voice note  ›  sent to {chat}\nTap to stop and send.',
   'g.noteRecSavedTo': 'Voice note  ›  saved to {chat}\nTap to stop and save.',
+  'g.noteRecLang': 'Voice note  ›  {chat}  ·  translated to {lang}\nTap to stop and send.',
+  'g.noteLang': 'Translated to {lang}',
   'g.replyRec': 'Speak in {mine}  ›  sent in {theirs}\nTap to stop. You can review it before it is sent.',
   'g.stopsIn': 'stops in {n}s',
   'g.replyTo': 'Reply to {name}',
@@ -104,7 +106,9 @@ export const EN = {
     'Voice notes from the glasses:\n' +
     '• /notes: pick where they go: one of your groups (create a group with only me in it for private notes), ' +
     'a person (/notes @name; they must have opened a chat with me), or this chat. ' +
-    'On the glasses, choose "Record a voice note" on the Ready screen and tap to stop: it is sent as a voice message, with a transcript.',
+    'On the glasses, choose "Record a voice note" on the Ready screen and tap to stop: it is sent as a voice message, with a transcript.\n' +
+    '• Talking with someone who speaks another language? /notes → 🌐 picks the language they read (or /notes lang Spanish): ' +
+    'you speak in yours, and the transcript under each voice note is translated into theirs.',
   'b.alreadyPaired': 'These glasses are already paired with your account. Language: {lang}.',
   'b.codeNotFound': 'Code not found. Open LingoBot on your G2 to get a fresh code.',
   'b.pairedOther':
@@ -199,6 +203,18 @@ export const EN = {
   'b.sendNotesUsername': 'Send the @username of the person who should get your voice notes.',
   'b.notUsernameNotes': 'That does not look like a @username. Open /notes to try again.',
   'b.saved': 'Saved',
+  'b.notesLangBtn': '🌐 Translate my voice notes: {lang}',
+  'b.notesLangOff': 'off',
+  'b.notesLangLine': 'Each note is transcribed and translated into {lang} for them; your voice stays as it is.',
+  'b.notesLangNone': 'Not translated. Tap 🌐 if they read another language.',
+  'b.notesLangPick':
+    'Which language does {chat} read? You keep speaking your language: the transcript under each voice note is translated into theirs.\n' +
+    'Any language works here (type /notes lang <language> for one not listed).',
+  'b.notesLangOffBtn': '✖️ No translation',
+  'b.notesLangSet': 'Your voice notes to {chat} are now translated into {lang}.',
+  'b.notesLangCleared': 'Your voice notes to {chat} are no longer translated.',
+  'b.notesLangNeedTarget': 'First pick where your voice notes go (/notes), then their language.',
+  'b.back': '‹ Back',
 
   'b.notMember': 'You are not a member of that group.',
   'b.botLeft': 'I am no longer in that group.',

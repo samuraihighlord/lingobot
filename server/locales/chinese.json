@@ -74,7 +74,7 @@
   "s.noStt": "语音功能尚未设置（缺少语音转文字密钥）。文字消息仍可正常使用。",
   "s.glassesDisconnected": "你的眼镜已与此 Telegram 账号断开连接。",
   "s.yourChat": "你与 @{bot} 的聊天",
-  "b.help": "LingoBot 可以在你的 Even G2 上翻译 Telegram 消息和语音消息。\n\n1. 在眼镜上打开 LingoBot，把它显示的代码发给我：/start LB-XXXX\n2. 设置你的语言：/lang。你的眼镜和这个聊天会切换到该语言，所有其他语言的内容都会被翻译成它。\n3. 把任何消息或语音转发到这里。\n4. 在眼镜上选择或说出回复。\n5. 在原始聊天中输入 @{bot}，然后点击你的回复即可发送。\n6. 要将眼镜与另一个账号配对：/disconnect\n\n自动模式（无需转发）：\n• 私人聊天（Telegram Premium）：设置 > Telegram Business > 聊天机器人 > 添加 @{bot}，选择聊天，并允许“回复消息”。非你语言的消息会显示在你的眼镜上，你的回复将以你的身份发送。\n• 群组：把我加入群组，并在那里发送 /watch。每条非你语言的消息都会显示在你的眼镜上（/watch mentions：仅显示提及你和回复你的消息）。我会把你的回复发到群里。使用 /unwatch 停止。\n• 私下关注群组中的某人：/follow 后在此选择群组，再选择此人。（在群组内：/watch @name，或回复他的消息并发送 /watch。）他发布的所有内容（文字或语音）都会以你的语言显示在眼镜上；你可以语音回复、选择 AI 回复，或忽略。/unwatch @name 停止关注，/watching 查看你关注的所有对象。\n\n从眼镜发送语音消息：\n• /notes：选择发送位置：你的某个群组（创建一个只有我的群组用于私人笔记）、某个人（/notes @name；对方必须已与我开始聊天），或当前聊天。在眼镜上，于就绪界面选择“录制语音消息”，点击结束录制：它将以语音消息发送，并附带文字转录。",
+  "b.help": "LingoBot 可以在你的 Even G2 上翻译 Telegram 消息和语音消息。\n\n1. 在眼镜上打开 LingoBot，把它显示的代码发给我：/start LB-XXXX\n2. 设置你的语言：/lang。你的眼镜和这个聊天会切换到该语言，所有其他语言的内容都会翻译成它。\n3. 把任何消息或语音消息转发到这里。\n4. 在眼镜上选择或说出回复。\n5. 在原聊天中输入 @{bot}，然后点击你的回复即可发送。\n6. 要将眼镜与其他账号配对：/disconnect\n\n自动模式（无需转发）：\n• 私人聊天（Telegram Premium）：进入 设置 > Telegram 商业版 > 聊天机器人，添加 @{bot}，选择聊天，并允许“回复消息”。外语消息会显示在你的眼镜上，你的回复会以你的身份发送。\n• 群组：把我加入群组，并在那里发送 /watch。所有不是你语言的消息都会显示在你的眼镜上（/watch mentions：仅显示提及你和回复你的消息）。我会在群组中发布你的回复。输入 /unwatch 停止。\n• 私下关注群组中的某人：/follow here，选择群组，然后选择此人。（在群组本身中：/watch @name，或回复他们的消息并发送 /watch。）他们发布的所有内容（文字或语音）都会以你的语言显示在眼镜上；你可以用语音回复、选择 AI 回复，或忽略。输入 /unwatch @name 停止，输入 /watching 查看你关注的所有对象。\n\n来自眼镜的语音消息：\n• /notes：选择它们发送到哪里：你的某个群组（创建一个只有我的群组用于私密笔记）、某个人（/notes @name；对方必须先与我开启过聊天），或当前聊天。在眼镜上，在“准备就绪”界面选择“录制语音消息”，然后点击停止：它会以语音消息的形式发送，并附带文字转录。\n• 与说其他语言的人交谈？/notes → 🌐 选择对方阅读的语言（或使用 /notes lang Spanish）：你用自己的语言说话，每条语音消息下方的转录会翻译成对方的语言。",
   "b.alreadyPaired": "这副眼镜已与你的账号配对。语言：{lang}。",
   "b.codeNotFound": "未找到代码。请在 G2 上打开 LingoBot 获取新代码。",
   "b.pairedOther": "这副眼镜已与另一个 Telegram 账号配对。请先断开它（在手机上的 LingoBot 页面，或在该账号中发送 /disconnect），然后再重新发送代码。",
@@ -187,7 +187,19 @@
   "b.cmdNotes": "选择语音笔记的群组或联系人",
   "b.cmdLang": "你的语言",
   "b.cmdHelp": "LingoBot 的使用方法",
-  "b.cmdDisconnect": "解除你的眼镜配对"
+  "b.cmdDisconnect": "解除你的眼镜配对",
+  "g.noteRecLang": "语音消息  ›  {chat}  ·  翻译为{lang}\n点击停止并发送。",
+  "g.noteLang": "已翻译为{lang}",
+  "b.notesLangBtn": "🌐 翻译我的语音消息：{lang}",
+  "b.notesLangOff": "关闭",
+  "b.notesLangLine": "每条消息都会被转录并为对方翻译成{lang}；你的语音保持不变。",
+  "b.notesLangNone": "未翻译。如果对方阅读其他语言，请点击 🌐。",
+  "b.notesLangPick": "{chat}阅读哪种语言？你继续用自己的语言说话：每条语音消息下方的转录会翻译成对方的语言。\n这里支持任何语言（如果列表中没有，可输入 /notes lang <语言>）。",
+  "b.notesLangOffBtn": "✖️ 不翻译",
+  "b.notesLangSet": "你发送给{chat}的语音消息现在会翻译成{lang}。",
+  "b.notesLangCleared": "你发送给{chat}的语音消息不再翻译。",
+  "b.notesLangNeedTarget": "请先选择语音消息的发送位置（/notes），再选择对方的语言。",
+  "b.back": "‹ 返回"
  },
  "source": {
   "g.connecting": "Connecting to LingoBot…",
@@ -262,7 +274,7 @@
   "s.noStt": "Voice is not set up yet (no speech-to-text key). Text messages still work.",
   "s.glassesDisconnected": "Your glasses were disconnected from this Telegram account.",
   "s.yourChat": "your chat with @{bot}",
-  "b.help": "LingoBot translates Telegram messages and voice notes on your Even G2.\n\n1. Open LingoBot on your glasses and send me the code it shows: /start LB-XXXX\n2. Set your language: /lang. Your glasses and this chat switch to it, and everything in another language is translated into it.\n3. Forward any message or voice note here.\n4. Pick or speak a reply on the glasses.\n5. In the original chat, type @{bot} and tap your reply to send it.\n6. To pair the glasses with another account: /disconnect\n\nAutomatic mode (no forwarding):\n• Private chats (Telegram Premium): Settings > Telegram Business > Chatbots > add @{bot}, pick the chats, allow \"Reply to messages\". Foreign-language messages appear on your glasses and your reply is sent as you.\n• Groups: add me to the group and send /watch there. Every message not in your language appears on your glasses (/watch mentions: only mentions of you and replies to you). I post your reply in the group. /unwatch to stop.\n• Follow people in a group, privately: /follow here, pick the group, then the person. (In the group itself: /watch @name, or reply to their message with /watch.) Everything they post (text or voice) reaches your glasses in your language; reply by voice, pick an AI reply, or ignore it. /unwatch @name to stop, /watching to see everything you watch.\n\nVoice notes from the glasses:\n• /notes: pick where they go: one of your groups (create a group with only me in it for private notes), a person (/notes @name; they must have opened a chat with me), or this chat. On the glasses, choose \"Record a voice note\" on the Ready screen and tap to stop: it is sent as a voice message, with a transcript.",
+  "b.help": "LingoBot translates Telegram messages and voice notes on your Even G2.\n\n1. Open LingoBot on your glasses and send me the code it shows: /start LB-XXXX\n2. Set your language: /lang. Your glasses and this chat switch to it, and everything in another language is translated into it.\n3. Forward any message or voice note here.\n4. Pick or speak a reply on the glasses.\n5. In the original chat, type @{bot} and tap your reply to send it.\n6. To pair the glasses with another account: /disconnect\n\nAutomatic mode (no forwarding):\n• Private chats (Telegram Premium): Settings > Telegram Business > Chatbots > add @{bot}, pick the chats, allow \"Reply to messages\". Foreign-language messages appear on your glasses and your reply is sent as you.\n• Groups: add me to the group and send /watch there. Every message not in your language appears on your glasses (/watch mentions: only mentions of you and replies to you). I post your reply in the group. /unwatch to stop.\n• Follow people in a group, privately: /follow here, pick the group, then the person. (In the group itself: /watch @name, or reply to their message with /watch.) Everything they post (text or voice) reaches your glasses in your language; reply by voice, pick an AI reply, or ignore it. /unwatch @name to stop, /watching to see everything you watch.\n\nVoice notes from the glasses:\n• /notes: pick where they go: one of your groups (create a group with only me in it for private notes), a person (/notes @name; they must have opened a chat with me), or this chat. On the glasses, choose \"Record a voice note\" on the Ready screen and tap to stop: it is sent as a voice message, with a transcript.\n• Talking with someone who speaks another language? /notes → 🌐 picks the language they read (or /notes lang Spanish): you speak in yours, and the transcript under each voice note is translated into theirs.",
   "b.alreadyPaired": "These glasses are already paired with your account. Language: {lang}.",
   "b.codeNotFound": "Code not found. Open LingoBot on your G2 to get a fresh code.",
   "b.pairedOther": "These glasses are paired with another Telegram account. Disconnect it first (on the LingoBot page on the phone, or /disconnect from that account), then send the code again.",
@@ -375,6 +387,18 @@
   "b.cmdNotes": "Pick the group or person for your voice notes",
   "b.cmdLang": "Your language",
   "b.cmdHelp": "How LingoBot works",
-  "b.cmdDisconnect": "Unpair your glasses"
+  "b.cmdDisconnect": "Unpair your glasses",
+  "g.noteRecLang": "Voice note  ›  {chat}  ·  translated to {lang}\nTap to stop and send.",
+  "g.noteLang": "Translated to {lang}",
+  "b.notesLangBtn": "🌐 Translate my voice notes: {lang}",
+  "b.notesLangOff": "off",
+  "b.notesLangLine": "Each note is transcribed and translated into {lang} for them; your voice stays as it is.",
+  "b.notesLangNone": "Not translated. Tap 🌐 if they read another language.",
+  "b.notesLangPick": "Which language does {chat} read? You keep speaking your language: the transcript under each voice note is translated into theirs.\nAny language works here (type /notes lang <language> for one not listed).",
+  "b.notesLangOffBtn": "✖️ No translation",
+  "b.notesLangSet": "Your voice notes to {chat} are now translated into {lang}.",
+  "b.notesLangCleared": "Your voice notes to {chat} are no longer translated.",
+  "b.notesLangNeedTarget": "First pick where your voice notes go (/notes), then their language.",
+  "b.back": "‹ Back"
  }
 }

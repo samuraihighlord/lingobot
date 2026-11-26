@@ -102,6 +102,11 @@ The G2 firmware font cannot draw every script, so those languages show **🚫 �
 
 UI text lives in `server/src/i18n/en.ts`. Claude translates it into each language the first time someone picks that language, and the result is cached in `server/locales/`. When an English string changes, only that string is translated again. `npm run locales` (in `server/`) pre-translates the `/lang` menu languages.
 
+## Voice notes for someone who speaks another language
+For example, a couple from two countries in a Telegram group with LingoBot. In the bot, open `/notes`, pick the group or person, then tap **🌐 Translate my voice notes** and choose the language they read (or type `/notes lang Spanish`; `/notes lang off` turns it off). Any language works here, including ones the glasses can't display, because they read it on their phone.
+
+On the glasses you record in your own language. They get your voice message with the transcript translated into their language, and your original words underneath (🗣). Their replies can reach your glasses translated too: use `/follow` in that group.
+
 ## Testing without spending credits
 Set `MOCK_AI=1` and `DEV_ENDPOINTS=1` in `server/.env` (and `DISABLE_BOT=1` to skip Telegram). Then push a fake message to the glasses:
 ```bash

@@ -20,7 +20,7 @@ type Screen =
   | { kind: 'busy'; text: string }
   | { kind: 'confirm'; item: Item; mine: string; spoken: boolean; translated: string; lang: string } // lang: named in the user's language
   | { kind: 'delivered'; sentTo?: string }
-  | { kind: 'note_saved'; chat: string; durationSec: number; transcript?: string }
+  | { kind: 'note_saved'; chat: string; durationSec: number; transcript?: string; lang?: string }
   | { kind: 'error'; text: string; back?: Item }
 
 // Options in the item menu. Voice reply comes first (one tap to record), then the 3 AI drafts.
@@ -40,6 +40,7 @@ let botUsername = 'LingoBot'
 let userLang = 'English' // named in itself ("Français"), for display
 let notesChat: string | undefined // where voice notes go (set with /notes in Telegram): a group title or @person
 let notesToPerson = false
+let notesLang: string | undefined // voice note transcripts are translated into this for the recipient
 let code = ''
 let conn: Connection | null = null
 let recordTimer: number | null = null
@@ -74,6 +75,7 @@ function onServerMessage(msg: ServerMsg): void {
       setStrings(msg.ui) // every glasses text in the user's language
       notesChat = msg.notesChat
       notesToPerson = Boolean(msg.notesToPerson)
+      notesLang = msg.notesLang
       setPairing(paired, botUsername, msg.userLang, msg.user)
       setHint(paired ? `Paired with @${botUsername}. Language: ${msg.userLang}` : `Send /start ${code} to @${botUsername}`)
       // The server re-sends every open item right after 'state', so start from an empty list.
@@ -115,7 +117,7 @@ function onServerMessage(msg: ServerMsg): void {
       go({ kind: 'delivered', sentTo: msg.sentTo })
       break
     case 'note_saved':
-      go({ kind: 'note_saved', chat: msg.chat, durationSec: msg.durationSec, transcript: msg.transcript })
+      go({ kind: 'note_saved', chat: msg.chat, durationSec: msg.durationSec, transcript: msg.transcript, lang: msg.lang })
       break
     case 'error':
       if (screen.kind === 'recording') {
@@ -322,7 +324,8 @@ async function draw(): Promise<void> {
     }
     case 'recording':
       if (!s.item) {
-        return showRecording(bridge, recordTimerText(), t(notesToPerson ? 'noteRecTo' : 'noteRecSavedTo', { chat: notesChat ?? `@${botUsername}` }))
+        const chat = notesChat ?? `@${botUsername}`
+        return showRecording(bridge, recordTimerText(), notesLang ? t('noteRecLang', { chat, lang: notesLang }) : t(notesToPerson ? 'noteRecTo' : 'noteRecSavedTo', { chat }))
       }
       return showRecording(bridge, recordTimerText(), t('replyRec', { mine: myName(s.item), theirs: srcName(s.item) }))
     case 'busy':
@@ -344,7 +347,9 @@ async function draw(): Promise<void> {
     case 'note_saved': {
       const next = queue.length ? t('tapMessages', { n: queue.length }) : t('tapContinue')
       const where = t(notesToPerson ? 'noteTo' : 'noteIn', { dur: formatSec(s.durationSec), chat: s.chat })
-      const detail = `${where}${s.transcript ? `\n“${s.transcript}”` : ''}`
+      // The transcript shown is in the user's own words; the recipient got it translated (s.lang).
+      // (The status screen joins lines, so the parts are separated with " · ".)
+      const detail = [where, s.lang && t('noteLang', { lang: s.lang }), s.transcript && `“${s.transcript}”`].filter(Boolean).join('  ·  ')
       return showStatus(bridge, 'sent', t(notesToPerson ? 'noteSent' : 'noteSaved'), detail, next)
     }
     case 'error':

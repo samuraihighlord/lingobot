@@ -12,6 +12,9 @@ export interface AudioInput {
   data: Buffer
   filename: string // extension tells the provider the format, e.g. "voice.ogg", "reply.wav"
   mimeType: string
+  /** ISO 639-1 codes the speech is most likely in (the user speaking on the glasses: their language and English).
+   *  Detection is limited to these, which is far more reliable on short clips; empty = any language. */
+  likely?: string[]
 }
 
 /** Returns the transcript in the language that was spoken. */
@@ -22,13 +25,24 @@ export async function transcribe(audio: AudioInput): Promise<string> {
   throw new SttUnavailableError()
 }
 
-/** Deepgram pre-recorded API: raw audio in the body, spoken language detected automatically. */
+/** Deepgram pre-recorded API: raw audio in the body, language detected (among `likely` when given;
+ *  if Deepgram does not support one of those, among all languages). */
 async function transcribeDeepgram(audio: AudioInput): Promise<string> {
-  const params = new URLSearchParams({
-    model: config.deepgramModel,
-    detect_language: 'true', // voice notes can be in any language
-    smart_format: 'true', // punctuation, numbers, dates
-  })
+  const likely = [...new Set(audio.likely ?? [])]
+  if (likely.length) {
+    try {
+      return await deepgramRequest(audio, likely)
+    } catch (err) {
+      console.warn(`[stt] Deepgram limited to ${likely.join('/')} failed, detecting any language:`, (err as Error).message.slice(0, 120))
+    }
+  }
+  return deepgramRequest(audio, []) // incoming voice notes can be in any language
+}
+
+async function deepgramRequest(audio: AudioInput, likely: string[]): Promise<string> {
+  const params = new URLSearchParams({ model: config.deepgramModel, smart_format: 'true' }) // smart_format: punctuation, numbers, dates
+  if (likely.length) for (const code of likely) params.append('detect_language', code)
+  else params.append('detect_language', 'true')
   const res = await fetch(`https://api.deepgram.com/v1/listen?${params}`, {
     method: 'POST',
     headers: { Authorization: `Token ${config.deepgramKey}`, 'Content-Type': audio.mimeType },
