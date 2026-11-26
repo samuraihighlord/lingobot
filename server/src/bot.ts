@@ -1,6 +1,6 @@
 // Telegram bot: pairing, forwarded messages/voice notes, inline mode, reply delivery,
 // and watched chats (Telegram Business private chats + groups with /watch).
-import { Bot, InlineKeyboard, InputFile, type Context } from 'grammy'
+import { Bot, GrammyError, InlineKeyboard, InputFile, type Context } from 'grammy'
 import type { Message } from 'grammy/types'
 import { config } from './config.js'
 import { handleIncoming, pushState, setTelegramPort, stateMsg } from './flow.js'
@@ -19,7 +19,7 @@ const COPY_TEXT_MAX = 256 // Telegram limit for copy-to-clipboard buttons
 
 export async function startBot(): Promise<void> {
   const bot = new Bot(config.telegramToken, config.telegramApiRoot ? { client: { apiRoot: config.telegramApiRoot } } : undefined)
-  const me = await bot.api.getMe()
+  const me = await getMeWithRetry(bot)
   const username = me.username ?? 'LingoBot' // bots always have one; fallback satisfies the type
   if (!me.can_read_all_group_messages) {
     console.warn(
@@ -925,6 +925,23 @@ export async function startBot(): Promise<void> {
   void bot.start({
     allowed_updates: ['message', 'callback_query', 'inline_query', 'business_connection', 'business_message', 'my_chat_member'],
   })
+}
+
+/**
+ * The first call to Telegram at startup. A short network hiccup used to stop the whole server,
+ * so network errors are retried (2, 4, 8, 16, 30, 30 s). Telegram's own refusals (e.g. a wrong token) are not.
+ */
+async function getMeWithRetry(bot: Bot) {
+  const waits = [2, 4, 8, 16, 30, 30]
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await bot.api.getMe()
+    } catch (err) {
+      if (err instanceof GrammyError || attempt >= waits.length) throw err
+      console.warn(`[bot] cannot reach Telegram (${(err as Error).message}); retrying in ${waits[attempt]}s`)
+      await new Promise(r => setTimeout(r, waits[attempt] * 1000))
+    }
+  }
 }
 
 /** People named in a /watch command: the author of the replied-to message, tap-mentions and @usernames. */

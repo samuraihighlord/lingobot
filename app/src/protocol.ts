@@ -12,6 +12,7 @@ export interface Item {
   srcLangLabel?: string // srcLang named in the user's language ("Französisch"), for display
   userLangLabel?: string // userLang named in itself ("Deutsch"), for display
   translation: string // in userLang, shortened for the display
+  sameLang?: boolean // already in userLang (e.g. a followed person writing in it): translation = original, nothing translated
   original: string // original text (or transcript of the voice note)
   durationSec?: number // voice notes only
   drafts: string[] // 3 short reply suggestions, in userLang

@@ -23,11 +23,9 @@ type Screen =
   | { kind: 'note_saved'; chat: string; durationSec: number; transcript?: string; lang?: string }
   | { kind: 'error'; text: string; back?: Item }
 
-// Options in the item menu. Voice reply comes first (one tap to record), then the 3 AI drafts.
-const OPT_SPEAK = 0
-const FIRST_DRAFT = 1
-const OPT_ORIGINAL = 4
-const OPT_SKIP = 5
+// Options in the item menu: voice reply first (one tap to record), then the AI drafts,
+// "Show original" (only when the message was translated) and "Ignore". See itemOptions().
+type ItemAction = { kind: 'speak' } | { kind: 'draft'; index: number } | { kind: 'original' } | { kind: 'skip' }
 
 mountPhoneUi()
 onDisconnect(() => conn?.send({ t: 'unpair' }))
@@ -179,13 +177,14 @@ function onListSelect(index: number): void {
     if (index === 0) startRecording()
   } else if (screen.kind === 'item') {
     const { item } = screen
-    if (index === OPT_SPEAK) {
+    const action = itemOptions(item, screen.showOriginal)[index]?.action
+    if (action?.kind === 'speak') {
       startRecording(item)
-    } else if (index < OPT_ORIGINAL) {
-      conn?.send({ t: 'pick', itemId: item.id, draft: index - FIRST_DRAFT })
-    } else if (index === OPT_ORIGINAL) {
+    } else if (action?.kind === 'draft') {
+      conn?.send({ t: 'pick', itemId: item.id, draft: action.index })
+    } else if (action?.kind === 'original') {
       go({ ...screen, showOriginal: !screen.showOriginal })
-    } else if (index === OPT_SKIP) {
+    } else if (action?.kind === 'skip') {
       conn?.send({ t: 'skip', itemId: item.id })
       queue = queue.filter(q => q.id !== item.id)
       go(nextScreen())
@@ -310,16 +309,12 @@ async function draw(): Promise<void> {
       return showMessage(bridge, {
         from: item.from,
         group: item.group,
-        route: s.showOriginal ? t('original', { lang: src }) : `${src}  ›  ${myName(item)}`,
+        // Same language: just the language, the message as written (there is no translation).
+        route: item.sameLang ? src : s.showOriginal ? t('original', { lang: src }) : `${src}  ›  ${myName(item)}`,
         meta,
         voice,
         body: s.showOriginal ? item.original : item.translation,
-        options: [
-          t('speakReply', { lang: src }),
-          ...item.drafts.slice(0, 3).map(d => `›  ${d}`),
-          t(s.showOriginal ? 'showTranslation' : 'showOriginal'),
-          t('ignore'),
-        ],
+        options: itemOptions(item, s.showOriginal).map(o => o.label),
       })
     }
     case 'recording':
@@ -357,6 +352,17 @@ async function draw(): Promise<void> {
   }
 }
 
+/** The item menu: what each option says and does (same order on the glasses and in onListSelect). */
+function itemOptions(item: Item, showOriginal: boolean): { label: string; action: ItemAction }[] {
+  const options: { label: string; action: ItemAction }[] = [
+    { label: t('speakReply', { lang: srcName(item) }), action: { kind: 'speak' } },
+    ...item.drafts.slice(0, 3).map((d, index) => ({ label: `›  ${d}`, action: { kind: 'draft', index } as ItemAction })),
+  ]
+  if (!item.sameLang) options.push({ label: t(showOriginal ? 'showTranslation' : 'showOriginal'), action: { kind: 'original' } })
+  options.push({ label: t('ignore'), action: { kind: 'skip' } })
+  return options
+}
+
 /** The sender's language, named in the user's language. */
 function srcName(item: Item): string {
   return item.srcLangLabel ?? item.srcLang
@@ -373,7 +379,7 @@ function formatSec(sec: number): string {
 
 /** Shows the same thing as the glasses on the phone page. */
 function mirror(s: Screen): void {
-  const route = (item: Item) => `${srcName(item)} → ${myName(item)}`
+  const route = (item: Item) => (item.sameLang ? srcName(item) : `${srcName(item)} → ${myName(item)}`)
   switch (s.kind) {
     case 'item':
       return setNow({

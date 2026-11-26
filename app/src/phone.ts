@@ -121,8 +121,9 @@ export function mountPhoneUi(): void {
             <span class="bot-ref">@thelingo_bot</span>, choose chats, allow <em>Reply to messages</em>. Messages not in your language
             reach the glasses by themselves, and replies are sent as you.</li>
           <li><strong>Follow people in a group, privately</strong>: add the bot to the group, then tap <code>/follow</code> in your
-            private chat with <span class="bot-ref">@thelingo_bot</span> and pick the group and the people. Everything they post, text
-            or voice, in any language, comes to the glasses. Nothing is posted in the group.</li>
+            private chat with <span class="bot-ref">@thelingo_bot</span> and pick the group and the people. As long as you follow
+            someone, every message they post, text or voice, comes to the glasses, in any language, including your own: then
+            it is shown exactly as written, with no translation needed. Nothing is posted in the group.</li>
           <li><strong>Watch a whole group</strong>: in <code>/follow</code> choose <em>Everything not in my language</em> or
             <em>Mentions of me &amp; replies to me</em> (or send <code>/watch</code> / <code>/watch mentions</code> in the group).
             Your replies are posted under the original message. <code>/watching</code> lists what you watch.</li>

@@ -62,7 +62,9 @@ export async function handleIncoming(session: Session, input: IncomingInput): Pr
     if (!original) return { ok: false, reason: tr(session, 's.nothing') }
 
     const a = await analyzeIncoming(original, session.userLang)
-    if (input.onlyForeign && sameLanguage(a.srcLang, session.userLang)) {
+    // Already in the user's language: watched chats skip it; followed people and forwards show it as written.
+    const same = sameLanguage(a.srcLang, session.userLang)
+    if (input.onlyForeign && same) {
       return { ok: false, reason: tr(session, 's.alreadyYours'), sameLanguage: true }
     }
     const item: Item = {
@@ -74,7 +76,8 @@ export async function handleIncoming(session: Session, input: IncomingInput): Pr
       userLang: session.userLang,
       srcLangLabel: knownLabel(a.srcLang, session.userLang) ?? a.srcLangLabel,
       userLangLabel: langLabel(session.userLang, session.userLang),
-      translation: a.short,
+      translation: same ? original : a.short, // no translation needed: the message exactly as written
+      sameLang: same || undefined,
       original,
       durationSec: input.audio?.durationSec,
       drafts: a.drafts,
@@ -285,7 +288,8 @@ async function prepareReply(session: Session, item: Item, mine: string, spoken =
     if (denied) return send(session, { t: 'error', text: denied })
   }
   const langLabel = item.srcLangLabel ?? item.srcLang
-  send(session, { t: 'busy', text: tr(session, 's.translatingTo', { lang: langLabel }) })
+  // Same language as the sender: the reply goes as it is (translateReply returns it unchanged).
+  if (!item.sameLang) send(session, { t: 'busy', text: tr(session, 's.translatingTo', { lang: langLabel }) })
   const translated = await translateReply(mine, session.userLang, item.srcLang)
   session.pending = { itemId: item.id, mine, translated }
   send(session, { t: 'confirm', itemId: item.id, mine, translated, lang: item.srcLang, langLabel, spoken })
