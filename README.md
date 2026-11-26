@@ -2,8 +2,6 @@
 
 **Telegram messages and voice notes in any language, translated on your Even G2. Reply by voice in your own language; it is sent in theirs.**
 
-Heads Up hackathon (Even Realities × TVM Ventures × Daos Hub) · Track 01 Messaging & News · Track 04 AI Assistants & Work (Claude) · Best Telegram integration
-
 ## The problem
 You are in Telegram chats in a language you don't speak: a supplier who sends French voice notes, a Chinese crypto group, family abroad. Today you copy text into a translator, switch apps, translate your answer back and paste it. Voice notes are worse: you need headphones and still can't understand them.
 
