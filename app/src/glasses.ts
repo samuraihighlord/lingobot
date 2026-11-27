@@ -19,7 +19,7 @@ import {
   TextContainerUpgrade,
   type EvenAppBridge,
 } from '@evenrealities/even_hub_sdk'
-import { avatarArt, codeArt, logoArt, statusArt, type StatusIcon } from './glassart'
+import { avatarArt, codeArt, logoArt, statusArt, tailArt, type StatusIcon } from './glassart'
 import { WAVE_H, WAVE_W, waveFrame } from './recordfx'
 import { t } from './strings'
 
@@ -36,7 +36,14 @@ const BESIDE_LOGO = LOGO_W + 22 // x where text next to the logo starts
 const DIM = 6
 const BRIGHT = 13
 
-type Layout = 'text' | 'pairing' | 'idle' | 'message' | 'confirm' | 'busy' | 'status' | 'record'
+// Chat bubbles: incoming messages sit on the left with a tail bottom-left, outgoing replies on the
+// right with a tail bottom-right (like the two bubbles in the logo). The empty gap on the other
+// side is what tells them apart at a glance.
+const BUBBLE_GAP = 64 // free space on the side the bubble does not belong to
+const TAIL_W = 22
+const TAIL_H = 14
+
+type Layout = 'text' | 'pairing' | 'idle' | 'message' | 'confirm' | 'busy' | 'status' | 'sent' | 'record'
 
 let started = false
 let layout: Layout | null = null
@@ -130,18 +137,22 @@ export interface MessageView {
   options: string[]
 }
 
-/** A message: avatar + sender, the text in a card, and the reply options. */
+/** An incoming message: avatar + sender, the text in a left-hand bubble, and the reply options. */
 export async function showMessage(bridge: EvenAppBridge, v: MessageView): Promise<void> {
   enter('message')
   const who = v.group ? `${clip(v.from, 16)}  ·  ${clip(v.group, 22)}` : clip(v.from, 30)
   const header = `${who}\n${v.route}${v.meta ? `  ·  ${v.meta}` : ''}`
+  const bubble = { x: 0, y: 60, w: W - BUBBLE_GAP, h: 92 }
   await page(bridge, {
     texts: [
       text_(1, 'from', 60, 0, W - 60, 58, header, { pad: 1 }),
-      text_(2, 'body', 0, 60, W, 96, clip(v.body, 150), { border: 1, color: BRIGHT, radius: 12, pad: 6 }),
+      text_(2, 'body', bubble.x, bubble.y, bubble.w, bubble.h, clip(v.body, 130), { border: 1, color: BRIGHT, radius: 16, pad: 6 }),
     ],
-    lists: [list_(3, 'options', 0, 160, W, H - 160, v.options)],
-    images: [image_(10, 'avatar', 6, 6, 44, 44, avatarArt(v.from, v.voice, 44))],
+    lists: [list_(3, 'options', 0, 168, W, H - 168, v.options)],
+    images: [
+      image_(10, 'avatar', 6, 6, 44, 44, avatarArt(v.from, v.voice, 44)),
+      tail_(11, 'left', bubble, BRIGHT, 1),
+    ],
   })
 }
 
@@ -153,16 +164,39 @@ export interface ConfirmView {
   translated: string
 }
 
-/** Review before sending: your words, then what will actually be sent. */
+/** Review before sending: your words in a small dim bubble, then what will actually be sent
+ *  in the main right-hand (outgoing) bubble. */
 export async function showConfirm(bridge: EvenAppBridge, v: ConfirmView): Promise<void> {
   enter('confirm')
+  const bubble = { x: BUBBLE_GAP - 24, y: 102, w: W - BUBBLE_GAP + 24, h: 86 }
   await page(bridge, {
     texts: [
-      text_(1, 'to', 0, 0, W, 34, t('replyTo', { name: clip(v.to, 40) }), { pad: 2 }),
-      text_(2, 'mine', 0, 34, W, 72, `${v.mineLabel}\n${clip(v.mine, 56)}`, { border: 1, color: DIM, radius: 12, pad: 6 }),
-      text_(3, 'sent', 0, 110, W, 96, `${t('sendsIn', { lang: v.lang })}\n${clip(v.translated, 110)}`, { border: 2, color: BRIGHT, radius: 12, pad: 5 }),
+      text_(1, 'to', 0, 0, W, 32, `→  ${t('replyTo', { name: clip(v.to, 40) })}`, { pad: 2 }),
+      text_(2, 'mine', BUBBLE_GAP + 16, 30, W - BUBBLE_GAP - 16, 68, `${v.mineLabel}\n${clip(v.mine, 40)}`, { border: 1, color: DIM, radius: 16, pad: 3 }),
+      text_(3, 'sent', bubble.x, bubble.y, bubble.w, bubble.h, `${t('sendsIn', { lang: v.lang })}\n${clip(v.translated, 100)}`, { border: 2, color: BRIGHT, radius: 16, pad: 5 }),
     ],
-    lists: [list_(4, 'actions', 0, 208, W, H - 208, [t('sendIn', { lang: v.lang }), t('back')])],
+    lists: [list_(4, 'actions', 0, 204, W, H - 204, [t('sendIn', { lang: v.lang }), t('back')])],
+    images: [tail_(10, 'right', bubble, BRIGHT, 2)],
+  })
+}
+
+export interface SentView {
+  title: string // "Sent"
+  detail: string // "to Yuki Tanaka"
+  text: string // what was sent
+  footer: string // what tapping does
+}
+
+/** After sending: the reply as an outgoing bubble, with a check and who it went to underneath. */
+export async function showSent(bridge: EvenAppBridge, v: SentView): Promise<void> {
+  enter('sent')
+  const bubble = { x: BUBBLE_GAP - 24, y: 8, w: W - BUBBLE_GAP + 24, h: 100 }
+  await page(bridge, {
+    texts: [
+      text_(1, 'sent', bubble.x, bubble.y, bubble.w, bubble.h, clip(v.text, 140), { border: 2, color: BRIGHT, radius: 16, pad: 6 }),
+      text_(2, 'status', 84, 142, W - 84, H - 142, `${v.title}  ·  ${clip(v.detail, 40)}\n\n${v.footer}`, { capture: true, pad: 2 }),
+    ],
+    images: [tail_(10, 'right', bubble, BRIGHT, 2), image_(11, 'icon', 12, 136, 60, 60, statusArt('sent', 60))],
   })
 }
 
@@ -285,6 +319,14 @@ interface ImageSpec {
 
 function image_(id: number, name: string, x: number, y: number, w: number, h: number, data: Promise<number[]>): ImageSpec {
   return { prop: new ImageContainerProperty({ xPosition: x, yPosition: y, width: w, height: h, containerID: id, containerName: name }), id, name, data }
+}
+
+/** A bubble tail under a card: bottom-left (incoming) or bottom-right (outgoing).
+ *  It overlaps the card's bottom border so the black top rows open a gap where the tail joins. */
+function tail_(id: number, side: 'left' | 'right', card: { x: number; y: number; w: number; h: number }, color: number, line: number): ImageSpec {
+  const x = side === 'left' ? card.x + 14 : card.x + card.w - 14 - TAIL_W
+  const y = card.y + card.h - line
+  return image_(id, `tail-${side}`, x, y, TAIL_W, TAIL_H, tailArt(side, TAIL_W, TAIL_H, color, line))
 }
 
 /** Builds a page and then fills its images, one at a time. */

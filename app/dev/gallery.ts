@@ -1,7 +1,7 @@
 // Dev-only: cycles through every LingoBot glasses screen with sample data, one per tap.
 // Run: npx evenhub-simulator http://localhost:5173/dev/gallery.html   (not part of the packed app)
 import { OsEventTypeList, waitForEvenAppBridge } from '@evenrealities/even_hub_sdk'
-import { showBusy, showConfirm, showIdle, showMessage, showPairing, showRecording, showStatus, updateRecording } from '../src/glasses'
+import { showBusy, showConfirm, showIdle, showMessage, showPairing, showRecording, showSent, showStatus, updateRecording } from '../src/glasses'
 import { waveFrame } from '../src/recordfx'
 
 const bridge = await waitForEvenAppBridge()
@@ -26,6 +26,7 @@ const screens: (() => Promise<void>)[] = [
   },
   () => showBusy(bridge, 'Translating to Japanese...'),
   () => showConfirm(bridge, { to: 'Yuki Tanaka', mineLabel: 'You said  ·  English', mine: 'Sure, I will bring the contract and two samples.', lang: 'Japanese', translated: 'もちろん、契約書とサンプルを2つ持っていきます。' }),
+  () => showSent(bridge, { title: 'Sent', detail: 'to Yuki Tanaka', text: 'もちろん、契約書とサンプルを2つ持っていきます。', footer: 'Tap for the next message  ·  +1 waiting' }),
   () => showStatus(bridge, 'sent', 'Sent', 'to Yuki Tanaka (Supplier group)', 'Tap for the next message  ·  +1 waiting'),
   () => showStatus(bridge, 'error', 'Not quite', "Didn't catch that. Try again.", 'Tap to go back'),
 ]

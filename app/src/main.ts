@@ -1,6 +1,6 @@
 // LingoBot glasses app: pairing, translated messages, reply drafts, voice reply, confirm.
 import { OsEventTypeList, waitForEvenAppBridge } from '@evenrealities/even_hub_sdk'
-import { showBusy, showConfirm, showIdle, showMessage, showPairing, showRecording, showStatus, showText, updateRecording } from './glasses'
+import { showBusy, showConfirm, showIdle, showMessage, showPairing, showRecording, showSent, showStatus, showText, updateRecording } from './glasses'
 import { mountPhoneUi, onDisconnect, setCode, setHint, setNow, setOnline, setPairing } from './phone'
 import type { Item, ServerMsg } from './protocol'
 import { LevelMeter, waveFrame } from './recordfx'
@@ -19,7 +19,7 @@ type Screen =
   | { kind: 'recording'; item?: Item } // item undefined = a voice note for the notes chat
   | { kind: 'busy'; text: string }
   | { kind: 'confirm'; item: Item; mine: string; spoken: boolean; translated: string; lang: string } // lang: named in the user's language
-  | { kind: 'delivered'; sentTo?: string }
+  | { kind: 'delivered'; sentTo?: string; text?: string } // text = the reply as sent, shown as an outgoing bubble
   | { kind: 'note_saved'; chat: string; durationSec: number; transcript?: string; lang?: string }
   | { kind: 'error'; text: string; back?: Item }
 
@@ -40,6 +40,7 @@ let notesChat: string | undefined // where voice notes go (set with /notes in Te
 let notesToPerson = false
 let notesLang: string | undefined // voice note transcripts are translated into this for the recipient
 let code = ''
+let lastConfirm: { itemId: string; translated: string } | null = null // what the next 'delivered' sent
 let conn: Connection | null = null
 let recordTimer: number | null = null
 let frameTimer: number | null = null
@@ -106,13 +107,15 @@ function onServerMessage(msg: ServerMsg): void {
       break
     case 'confirm': {
       const item = queue.find(q => q.id === msg.itemId)
+      lastConfirm = { itemId: msg.itemId, translated: msg.translated }
       if (item) go({ kind: 'confirm', item, mine: msg.mine, spoken: Boolean(msg.spoken), translated: msg.translated, lang: msg.langLabel ?? msg.lang })
       break
     }
     case 'delivered':
       queue = queue.filter(q => q.id !== msg.itemId)
       botUsername = msg.botUsername
-      go({ kind: 'delivered', sentTo: msg.sentTo })
+      go({ kind: 'delivered', sentTo: msg.sentTo, text: lastConfirm?.itemId === msg.itemId ? lastConfirm.translated : undefined })
+      lastConfirm = null
       break
     case 'note_saved':
       go({ kind: 'note_saved', chat: msg.chat, durationSec: msg.durationSec, transcript: msg.transcript, lang: msg.lang })
@@ -336,6 +339,7 @@ async function draw(): Promise<void> {
       })
     case 'delivered': {
       const next = waiting ? t('tapNext', { waiting }) : t('tapContinue')
+      if (s.sentTo && s.text) return showSent(bridge, { title: t('sent'), detail: t('sentTo', { name: s.sentTo }), text: s.text, footer: next })
       if (s.sentTo) return showStatus(bridge, 'sent', t('sent'), t('sentTo', { name: s.sentTo }), next)
       return showStatus(bridge, 'sent', t('replyReady'), t('replyReadyHint', { bot: botUsername }), next)
     }

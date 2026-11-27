@@ -86,6 +86,30 @@ export function avatarArt(name: string, voice: boolean, size = 48): Promise<numb
   })
 }
 
+/** Speech-bubble tail that hangs under a bordered text card: pointing down-left (incoming)
+ *  or down-right (outgoing). The top rows are black so they cut the card's border where the tail joins. */
+export function tailArt(side: 'left' | 'right', w: number, h: number, level: number, line = 2): Promise<number[]> {
+  return draw(`tail:${side}:${w}x${h}:${level}:${line}`, w, h, ctx => {
+    const g = Math.round((level / 15) * 255)
+    ctx.strokeStyle = `rgb(${g},${g},${g})`
+    ctx.lineWidth = line
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
+    const top = line / 2
+    const inset = line / 2 + 1
+    // Mirror for the outgoing side.
+    if (side === 'right') {
+      ctx.translate(w, 0)
+      ctx.scale(-1, 1)
+    }
+    ctx.beginPath()
+    ctx.moveTo(w - inset, top) // inner edge, where the border resumes
+    ctx.quadraticCurveTo(w * 0.45, h * 0.55, inset, h - inset) // tip
+    ctx.quadraticCurveTo(w * 0.3, h * 0.35, w * 0.28, top) // outer edge back up to the border
+    ctx.stroke()
+  })
+}
+
 export type StatusIcon = 'sent' | 'error' | 'busy'
 
 /** Large status icon: check in a ring (sent), exclamation in a ring (error), the logo (busy). */
